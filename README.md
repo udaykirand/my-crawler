@@ -9,6 +9,7 @@ Filters must be in the following format:
 ## Improvements
 1.  This can be improvised by using threads and an in-memory database like H2 to keep track of visited pages.
 2.  Filters can be changed to use RegEx in place of string functions.
+3.  Replace sysout with Log4j/SLF4J
 
 
 ## Steps to execute
