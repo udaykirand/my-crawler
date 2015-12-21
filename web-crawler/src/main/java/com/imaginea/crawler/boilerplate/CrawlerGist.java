@@ -27,7 +27,7 @@ public class CrawlerGist {
 			System.out.println(doc.getElementsMatchingText(Pattern.compile("Permalink")));
 			System.out.println(URL);
 			//printWriter(URL, doc.outerHtml());
-			//System.out.println(doc.title());
+			//LOG.info(doc.title());
 			// get all links and recursively call the processPage method
 			Elements questions = doc.select("a[href]");
 			for (Element link : questions) {

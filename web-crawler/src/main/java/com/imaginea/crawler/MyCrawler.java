@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.jsoup.nodes.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.imaginea.crawler.config.CrawlerConfig;
 import com.imaginea.crawler.config.Filter;
@@ -25,7 +27,7 @@ import com.imaginea.crawler.config.Filter;
  *
  */
 public class MyCrawler {
-
+	static final Logger LOG = LoggerFactory.getLogger(MyCrawler.class);
 	public static void main(String[] s) throws Exception {
 		if (s.length < 3) {
 			System.out.println("***************Alas!! This program not intelligent enough to read ur brain, just kidding!!"
@@ -57,11 +59,11 @@ public class MyCrawler {
 
 			ICrawler crawler = new CrawlerImpl(config);
 			List<Document> documents = crawler.start(true);
-			System.out.println("Returned docs - "+documents.size());
-			System.out.println("So, here you have all pages in hand. I am not saving them to disk as of now."
+			LOG.info("Returned docs - "+documents.size());
+			LOG.info("So, here you have all pages in hand. I am not saving them to disk as of now."
 					+ "Invoke Crawler.start(true) to save copies on disk in the given download directory");
 		} catch (Exception e) {
-			System.out.println("Something wrong :( !! Best part is author is good enough to print what is wrong!!");
+			LOG.info("Something wrong :( !! Best part is author is good enough to print what is wrong!!");
 			e.printStackTrace();
 		}
 	}

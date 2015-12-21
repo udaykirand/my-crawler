@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.jsoup.nodes.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.imaginea.crawler.config.CrawlerConfig;
 import com.imaginea.crawler.config.Filter;
@@ -22,6 +24,7 @@ public abstract class AbstractCrawler {
 	Set<String> visited = null;
 	List<Document> documents = null;
 	protected CrawlerConfig config;
+	static final Logger LOG = LoggerFactory.getLogger(AbstractCrawler.class);
 
 	/**
 	 * Verifies of the URL has been visited in this session or not. Ignores if
@@ -40,23 +43,23 @@ public abstract class AbstractCrawler {
 	 */
 	protected void filterResults() {
 		List<Document> removeList = new ArrayList<Document>();
-		System.out.println("Received " + documents.size() + " from visitPage");
+		LOG.info("Received " + documents.size() + " from visitPage");
 		for (Document doc : documents) {
 			for (Filter filter : config.getFilters()) {
 
 				switch (filter.getName()) {
 				case "title":
-					System.out.println("---TITLE---");
+					LOG.info("---TITLE---");
 					if (!doc.title().equalsIgnoreCase(filter.getValue()))
 						removeList.add(doc);
 					break;
 				case "url":
-					System.out.println("---URL---");
+					LOG.info("---URL---");
 					if (!doc.baseUri().contains(filter.getValue()))
 						removeList.add(doc);
 					break;
 				case "content":
-					System.out.println("---Content---");
+					LOG.info("---Content---");
 					if (!doc.text().contains(filter.getValue()))
 						removeList.add(doc);
 					break;
@@ -69,7 +72,7 @@ public abstract class AbstractCrawler {
 
 			}
 		}
-		System.out.println("Removing " + removeList.size() + " documents");
+		LOG.info("Removing " + removeList.size() + " documents");
 		documents.removeAll(removeList);
 	}
 

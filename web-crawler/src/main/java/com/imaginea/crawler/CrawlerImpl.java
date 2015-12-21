@@ -12,6 +12,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.imaginea.crawler.config.CrawlerConfig;
 
@@ -24,6 +26,7 @@ import com.imaginea.crawler.config.CrawlerConfig;
  *
  */
 public class CrawlerImpl extends AbstractCrawler implements ICrawler {
+	static final Logger LOG = LoggerFactory.getLogger(CrawlerImpl.class);
 	int count;
 
 	/**
@@ -49,9 +52,9 @@ public class CrawlerImpl extends AbstractCrawler implements ICrawler {
 		documents = new ArrayList<Document>();
 		File folder = new File(config.getDownloadDirectory());
 		if (!folder.exists()) {
-			System.out.println("Folder doesnt exist");
+			LOG.info("Folder doesnt exist");
 			if (folder.mkdirs()) {
-				System.out.println("Created folder: " + folder.getAbsolutePath());
+				LOG.info("Created folder: " + folder.getAbsolutePath());
 			} else {
 				throw new Exception(
 						"couldn't create the storage folder: " + folder.getAbsolutePath() + " does it already exist ?");
@@ -64,12 +67,12 @@ public class CrawlerImpl extends AbstractCrawler implements ICrawler {
 	 * @see com.imaginea.crawler.ICrawler#visitPage(java.lang.String)
 	 */
 	public List<Document> visitPage(String url) throws IOException {
-		System.out.println("In visitPage");
+		LOG.info("In visitPage");
 		if (isValid(url)) {
 			Document doc = Jsoup.connect(url).get();
 			documents.add(doc);
 			Elements allLinks = doc.select("a[href]");
-			System.out.println("Fetched all urls "+allLinks.size());
+			LOG.info("Fetched all urls "+allLinks.size());
 			for (Element link : allLinks) {
 				if (config.getMaxReq() == -1 || ++count < config.getMaxReq()) {
 					visitPage(link.attr("abs:href"));
