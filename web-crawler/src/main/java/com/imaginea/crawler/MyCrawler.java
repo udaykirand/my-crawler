@@ -56,13 +56,13 @@ public class MyCrawler {
 		try {
 
 			ICrawler crawler = new CrawlerImpl(config);
-			List<Document> documents = crawler.start(false);
+			List<Document> documents = crawler.start(true);
 			System.out.println("Returned docs - "+documents.size());
 			System.out.println("So, here you have all pages in hand. I am not saving them to disk as of now."
 					+ "Invoke Crawler.start(true) to save copies on disk in the given download directory");
 		} catch (Exception e) {
 			System.out.println("Something wrong :( !! Best part is author is good enough to print what is wrong!!");
-			System.out.println(e.getMessage());
+			e.printStackTrace();
 		}
 	}
 }

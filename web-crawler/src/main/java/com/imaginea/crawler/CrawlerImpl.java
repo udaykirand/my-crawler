@@ -49,6 +49,7 @@ public class CrawlerImpl extends AbstractCrawler implements ICrawler {
 		documents = new ArrayList<Document>();
 		File folder = new File(config.getDownloadDirectory());
 		if (!folder.exists()) {
+			System.out.println("Folder doesnt exist");
 			if (folder.mkdirs()) {
 				System.out.println("Created folder: " + folder.getAbsolutePath());
 			} else {
@@ -63,14 +64,17 @@ public class CrawlerImpl extends AbstractCrawler implements ICrawler {
 	 * @see com.imaginea.crawler.ICrawler#visitPage(java.lang.String)
 	 */
 	public List<Document> visitPage(String url) throws IOException {
+		System.out.println("In visitPage");
 		if (isValid(url)) {
 			Document doc = Jsoup.connect(url).get();
 			documents.add(doc);
 			Elements allLinks = doc.select("a[href]");
-
+			System.out.println("Fetched all urls "+allLinks.size());
 			for (Element link : allLinks) {
-				if (config.getMaxReq() == -1 || ++count < config.getMaxReq())
+				if (config.getMaxReq() == -1 || ++count < config.getMaxReq()) {
 					visitPage(link.attr("abs:href"));
+				}
+					
 			}
 		}
 
@@ -100,7 +104,7 @@ public class CrawlerImpl extends AbstractCrawler implements ICrawler {
 	 */
 	protected void saveDocuments(List<Document> documents) throws FileNotFoundException {
 		for (Document doc : documents) {
-			PrintWriter out = new PrintWriter(new File(doc.title() + ".html"));
+			PrintWriter out = new PrintWriter(config.getDownloadDirectory()+"/"+new File(doc.title() + ".html"));
 			out.write(doc.outerHtml());
 		}
 
