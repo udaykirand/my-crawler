@@ -13,6 +13,10 @@ public class Filter {
 	private String name;
 	private String value;
 	private static final List<String> VALID_FILTER_NAMES = Arrays.asList(new String[] {"title", "url", "content", "content-type"});
+	private boolean urlFilter = false;
+	public boolean isUrlFilter() {
+		return urlFilter;
+	}
 
 	public String getName() {
 		return name;
@@ -20,6 +24,8 @@ public class Filter {
 
 	public void setName(String name) {
 		this.name = name;
+		if(name.equals("url"))
+			this.urlFilter = true;
 	}
 
 	public String getValue() {

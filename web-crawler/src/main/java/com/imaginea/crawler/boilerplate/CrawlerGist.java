@@ -24,10 +24,11 @@ public class CrawlerGist {
 		if (isValid(URL)) {
 			// get useful information
 			Document doc = Jsoup.connect(URL).get();
-			System.out.println(doc.getElementsMatchingText(Pattern.compile("Permalink")));
+			System.out.println("----"+doc.baseUri());
+			//System.out.println(doc.getElementsMatchingText(Pattern.compile("Permalink")));
 			System.out.println(URL);
-			//printWriter(URL, doc.outerHtml());
-			//LOG.info(doc.title());
+			printWriter(URL, doc);
+			//System.out.println(doc.title());
 			// get all links and recursively call the processPage method
 			Elements questions = doc.select("a[href]");
 			for (Element link : questions) {
@@ -36,9 +37,10 @@ public class CrawlerGist {
 			}
 		}
 	}
-	private static void printWriter(String url, String htmlContent) throws FileNotFoundException {
-		PrintWriter out = new PrintWriter(new File(1+".html"));
-		out.write(htmlContent);
+	private static void printWriter(String url, Document doc) throws FileNotFoundException {
+		System.out.println("Saving "+doc.id());
+		PrintWriter out = new PrintWriter(new File(doc.id()+"html"));
+		out.write(doc.outerHtml());
 	}
 	private static boolean isValid(String url) {
 		return visited.add(url) && !(url.endsWith("js") || url.endsWith("css"));

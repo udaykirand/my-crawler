@@ -22,6 +22,7 @@ import com.imaginea.crawler.config.Filter;
 public abstract class AbstractCrawler {
 
 	Set<String> visited = null;
+	Set<String> saved = null;
 	List<Document> documents = null;
 	protected CrawlerConfig config;
 	static final Logger LOG = LoggerFactory.getLogger(AbstractCrawler.class);
@@ -34,7 +35,7 @@ public abstract class AbstractCrawler {
 	 * @return
 	 */
 	protected boolean isValid(String url) {
-		return visited.add(url) && !(url.endsWith("js") || url.endsWith("css"));
+		return visited.add(url) && url.contains("201412");
 	}
 
 	/**
@@ -43,23 +44,23 @@ public abstract class AbstractCrawler {
 	 */
 	protected void filterResults() {
 		List<Document> removeList = new ArrayList<Document>();
-		LOG.info("Received " + documents.size() + " from visitPage");
+		System.out.println("Received " + documents.size() + " from visitPage");
 		for (Document doc : documents) {
 			for (Filter filter : config.getFilters()) {
 
 				switch (filter.getName()) {
 				case "title":
-					LOG.info("---TITLE---");
+					System.out.println("---TITLE---");
 					if (!doc.title().equalsIgnoreCase(filter.getValue()))
 						removeList.add(doc);
 					break;
-				case "url":
-					LOG.info("---URL---");
+				/*case "url":
+					System.out.println("---URL---");
 					if (!doc.baseUri().contains(filter.getValue()))
 						removeList.add(doc);
-					break;
+					break;*/
 				case "content":
-					LOG.info("---Content---");
+					System.out.println("---Content---");
 					if (!doc.text().contains(filter.getValue()))
 						removeList.add(doc);
 					break;
@@ -72,9 +73,9 @@ public abstract class AbstractCrawler {
 
 			}
 		}
-		LOG.info("Removing " + removeList.size() + " documents");
+		System.out.println("Removing " + removeList.size() + " documents");
 		documents.removeAll(removeList);
 	}
 
-	protected abstract void saveDocuments(List<Document> docs) throws FileNotFoundException;
+	protected abstract void saveDocuments() throws FileNotFoundException;
 }
