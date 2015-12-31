@@ -50,7 +50,7 @@ public class CrawlerImpl implements Runnable {
 	 * @throws IOException
 	 */
 	public void visitPage(String url, boolean start) throws IOException {
-		// System.out.println("In visitPage [" + url + "]");
+		//System.out.println("In visitPage [" + url + "]");
 		if (isValid(url) || start) {
 			Document doc = Jsoup.connect(url).ignoreHttpErrors(true).get();
 			try {

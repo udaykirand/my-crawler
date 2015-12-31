@@ -42,13 +42,13 @@ public class MyCrawler {
 		}
 		Set<String> visited = new HashSet<String>();
 
-		ExecutorService executor = Executors.newFixedThreadPool(10);
+		ExecutorService executor = Executors.newFixedThreadPool(20);
 		for (int i = 0; i < 10; i++) {
 			Runnable writer99 = new Writer(config, queue, "writer99" + i);
 			Runnable crawler = new CrawlerImpl(config, "Crawler" + i, queue, visited);
-			executor.execute(crawler);
+			executor.submit(crawler);
 			Thread.sleep(333);
-			executor.execute(writer99);
+			executor.submit(writer99);
 		}
 		executor.shutdown();
 		executor.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
