@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.concurrent.BlockingQueue;
 
+import org.apache.log4j.Logger;
 import org.jsoup.nodes.Document;
 
 import com.imaginea.crawler.config.CrawlerConfig;
@@ -16,9 +17,11 @@ public class Writer implements Runnable {
 	static boolean running = true;
 	static String downloadDir = null;
 
+	final static Logger logger = Logger.getLogger(Writer.class);
+
 	Writer(CrawlerConfig config, BlockingQueue<Document> docs, String name) {
-		System.out.println("Started -- " + name);
-		downloadDir = config.getDownloadDirectory()+"/";
+		logger.info("Started thread [" + name + "]");
+		downloadDir = config.getDownloadDirectory() + "/";
 		this.docs = docs;
 		this.name = name;
 	}
@@ -41,14 +44,15 @@ public class Writer implements Runnable {
 	 * @throws FileNotFoundException
 	 */
 	protected void saveDocuments() throws InterruptedException {
-		System.out.println("Saving");
+		logger.info("In saveDocuments");
 		int c = 0;
 		PrintWriter out = null;
 		Document doc = null;
 		while (true) {
 			if (!(doc = docs.take()).baseUri().equals("END")) {
 				try {
-					out = new PrintWriter(downloadDir + new File(name + c++ + ".html"));
+					out = new PrintWriter(downloadDir
+							+ new File(name + c++ + ".html"));
 					out.write(doc.html());
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
@@ -59,11 +63,10 @@ public class Writer implements Runnable {
 				}
 			} else {
 				running = false;
-				System.out.println(running + " - " + name);
 				break;
 			}
 		}
-		System.out.println("-------- name " + name + " " + c + " --------");
+		logger.info("Thread [" + name + "] saved docs [" + c + "]");
 	}
 
 }

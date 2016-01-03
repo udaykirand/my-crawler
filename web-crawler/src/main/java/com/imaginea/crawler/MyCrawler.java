@@ -11,6 +11,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.log4j.Logger;
 import org.jsoup.nodes.Document;
 
 import com.imaginea.crawler.config.CrawlerConfig;
@@ -18,8 +19,12 @@ import com.imaginea.crawler.config.Filter;
 import com.imaginea.crawler.util.Stopwatch;
 
 public class MyCrawler {
-
+	
+	final static Logger logger = Logger.getLogger(MyCrawler.class);
+	
 	public static void main(String[] s) throws Exception {
+		//System.setProperty("logfile.name","F:/crawler.log");
+		logger.info("Started");
 		Stopwatch timer = new Stopwatch();
 		BlockingQueue<Document> queue = new ArrayBlockingQueue<Document>(25000);
 		CrawlerConfig config = new CrawlerConfig();
@@ -30,7 +35,7 @@ public class MyCrawler {
 		config.setDownloadDirectory(s[1]);
 		config.setMaxReq(Integer.parseInt(s[2]));
 
-		if (s.length > 3) {
+		/*if (s.length > 3) {
 			// Ok, you want to filter the results
 			String[] fil = Arrays.copyOfRange(s, 3, s.length);
 			for (String f : fil) {
@@ -39,7 +44,7 @@ public class MyCrawler {
 				filters.add(filter);
 			}
 			config.setFilters(filters);
-		}
+		}*/
 		Set<String> visited = new HashSet<String>();
 
 		ExecutorService executor = Executors.newFixedThreadPool(20);
@@ -52,7 +57,7 @@ public class MyCrawler {
 		}
 		executor.shutdown();
 		executor.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
-		System.out.println("Completed in [" + timer.elapsedTime() + "]");
+		logger.info("Completed in [" + timer.elapsedTime() + "]");
 	}
 
 }

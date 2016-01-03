@@ -4,12 +4,11 @@ import java.io.IOException;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 
+import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.imaginea.crawler.config.CrawlerConfig;
 
@@ -21,21 +20,21 @@ import com.imaginea.crawler.config.CrawlerConfig;
  * exception with corresponding message
  * 
  * @author udayd
- *
+ * 
  */
 public class CrawlerImpl implements Runnable {
-	static final Logger LOG = LoggerFactory.getLogger(CrawlerImpl.class);
 	private String name;
 	private Set<String> visited = null;
 	private BlockingQueue<Document> docs;
 	CrawlerConfig config = null;
+	final static Logger logger = Logger.getLogger(CrawlerImpl.class);
 
 	/**
 	 * @param config
 	 * @throws Exception
 	 */
-	public CrawlerImpl(CrawlerConfig config, String name, BlockingQueue<Document> docs, Set<String> visited)
-			throws Exception {
+	public CrawlerImpl(CrawlerConfig config, String name,
+			BlockingQueue<Document> docs, Set<String> visited) throws Exception {
 		super();
 		this.config = config;
 		config.validate();
@@ -50,7 +49,7 @@ public class CrawlerImpl implements Runnable {
 	 * @throws IOException
 	 */
 	public void visitPage(String url, boolean start) throws IOException {
-		//System.out.println("In visitPage [" + url + "]");
+		// logger.info("In visitPage [" + url + "]");
 		if (isValid(url) || start) {
 			Document doc = Jsoup.connect(url).ignoreHttpErrors(true).get();
 			try {
@@ -76,9 +75,10 @@ public class CrawlerImpl implements Runnable {
 	public void run() {
 		try {
 			visitPage(config.getRequestUrl(), true);
-			System.out.println("Setting END " + this.name);
+			logger.info("Setting END to [" + this.name + "]");
 			docs.put(new Document("END"));
-			System.out.println("Visited - " + visited.size() + " " + name);
+			logger.info("Thread [" + name + "] Visited [" + visited.size()
+					+ "]");
 		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
 		}
