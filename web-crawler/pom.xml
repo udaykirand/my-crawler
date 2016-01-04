@@ -31,6 +31,12 @@
 						</goals>
 						<configuration>
 							<finalName>webcrawler</finalName>
+							<appendAssemblyId>false</appendAssemblyId>
+							<archive>
+								<manifest>
+									<mainClass>com.imaginea.crawler.MyCrawler</mainClass>
+								</manifest>
+							</archive>
 						</configuration>
 					</execution>
 				</executions>

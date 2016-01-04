@@ -1,9 +1,7 @@
 package com.imaginea.crawler;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.io.File;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -15,36 +13,32 @@ import org.apache.log4j.Logger;
 import org.jsoup.nodes.Document;
 
 import com.imaginea.crawler.config.CrawlerConfig;
-import com.imaginea.crawler.config.Filter;
+import com.imaginea.crawler.util.InputProcessor;
 import com.imaginea.crawler.util.Stopwatch;
+import com.imaginea.crawler.util.Constants;
 
 public class MyCrawler {
-	
+
 	final static Logger logger = Logger.getLogger(MyCrawler.class);
-	
+
 	public static void main(String[] s) throws Exception {
-		//System.setProperty("logfile.name","F:/crawler.log");
-		logger.info("Started");
+		logger.info("Started MyCrawler");
+		logger.info("Log file location [" + System.getProperty("user.home") + "/crawler.log]");
 		Stopwatch timer = new Stopwatch();
 		BlockingQueue<Document> queue = new ArrayBlockingQueue<Document>(25000);
-		CrawlerConfig config = new CrawlerConfig();
-		List<Filter> filters = new ArrayList<Filter>();
-		Filter filter = new Filter();
 
-		config.setRequestUrl(s[0]);
-		config.setDownloadDirectory(s[1]);
-		config.setMaxReq(Integer.parseInt(s[2]));
+		File inputFile = null;
+		if (s.length > 0) {
+			inputFile = new File(s[0]);
+		} else {
+			inputFile = new File(Constants.DEFAULT_INPUT_DIR);
+		}
+		if (!inputFile.exists()) {
+			logger.error("No input file location specified");
+			return;
+		}
 
-		/*if (s.length > 3) {
-			// Ok, you want to filter the results
-			String[] fil = Arrays.copyOfRange(s, 3, s.length);
-			for (String f : fil) {
-				filter.setName(f.split(":")[0]);
-				filter.setValue(f.split(":")[1]);
-				filters.add(filter);
-			}
-			config.setFilters(filters);
-		}*/
+		CrawlerConfig config = InputProcessor.prepareConfig(inputFile);
 		Set<String> visited = new HashSet<String>();
 
 		ExecutorService executor = Executors.newFixedThreadPool(20);

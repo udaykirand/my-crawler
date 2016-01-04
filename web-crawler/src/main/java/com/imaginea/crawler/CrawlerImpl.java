@@ -28,19 +28,21 @@ public class CrawlerImpl implements Runnable {
 	private BlockingQueue<Document> docs;
 	CrawlerConfig config = null;
 	final static Logger logger = Logger.getLogger(CrawlerImpl.class);
+	private static String URL_PATTERN = null;
 
 	/**
 	 * @param config
 	 * @throws Exception
 	 */
-	public CrawlerImpl(CrawlerConfig config, String name,
-			BlockingQueue<Document> docs, Set<String> visited) throws Exception {
+	public CrawlerImpl(CrawlerConfig config, String name, BlockingQueue<Document> docs, Set<String> visited)
+			throws Exception {
 		super();
 		this.config = config;
 		config.validate();
 		this.name = name;
 		this.visited = visited;
 		this.docs = docs;
+		URL_PATTERN = config.getRequestUrl() + "(.*)" + config.getYear() + "(.*).mbox/%3c(.*)%3e";
 	}
 
 	/**
@@ -68,7 +70,7 @@ public class CrawlerImpl implements Runnable {
 	}
 
 	private boolean validLink(String url) {
-		return url.matches(config.getRequestUrl() + "2014(.*).mbox/%3c(.*)%3e");
+		return url.matches(URL_PATTERN);
 	}
 
 	@Override
@@ -77,14 +79,13 @@ public class CrawlerImpl implements Runnable {
 			visitPage(config.getRequestUrl(), true);
 			logger.info("Setting END to [" + this.name + "]");
 			docs.put(new Document("END"));
-			logger.info("Thread [" + name + "] Visited [" + visited.size()
-					+ "]");
+			logger.info("Thread [" + name + "] Visited [" + visited.size() + "]");
 		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
 
 	protected boolean isValid(String url) {
-		return visited.add(url) && url.contains("maven-users/2014");
+		return visited.add(url) && url.contains(config.getRequestUrl()) && url.contains(config.getYear());
 	}
 }

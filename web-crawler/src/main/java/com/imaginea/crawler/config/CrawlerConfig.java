@@ -1,8 +1,5 @@
 package com.imaginea.crawler.config;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * This saves the crawler config. 
  * @author udayd
@@ -20,15 +17,25 @@ public class CrawlerConfig {
 	
 	private boolean isShuttingDown = false;
 	
-	private List<Filter> filters = new ArrayList<Filter>();
+	private Filter filter = new Filter();
+	
+	private String year;
 	
 
-	public List<Filter> getFilters() {
-		return filters;
+	public String getYear() {
+		return year;
 	}
 
-	public void setFilters(List<Filter> filters) {
-		this.filters = filters;
+	public void setYear(String year) {
+		this.year = year;
+	}
+
+	public Filter getFilter() {
+		return filter;
+	}
+
+	public void setFilter(Filter filter) {
+		this.filter = filter;
 	}
 
 	public String getRequestUrl() {
@@ -68,9 +75,9 @@ public class CrawlerConfig {
 			throw new Exception("Invalid Download Directory");
 		if(requestUrl == null || "".equals(requestUrl))
 			throw new Exception("Invalid request URL");
-		if(!filters.isEmpty()) 
+		/*if(filters.isEmpty()) 
 			for(Filter filter : filters)
-				filter.validate();
+				filter.validate();*/
 	}
 	
 	public boolean isShuttingDown() {
