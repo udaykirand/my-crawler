@@ -13,7 +13,7 @@ During testing with maven-users mailing list for the year 2014, it takes `120-15
 ## Input file format
 url.to.crawl=http://mail-archives.apache.org/mod_mbox/maven-users/
 
-download.directory=/home/udayd/final
+download.directory=<directory of your choice>
 
 num.of.requests=-1 
 
